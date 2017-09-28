@@ -71,30 +71,42 @@ See [this example](https://github.com/ageitgey/face_recognition/blob/master/exam
 
 ## Installation
 
-Requirements:
-* Python 3+ or Python 2.7
-* macOS or Linux (Windows untested)
-* [Also can run on a Raspberry Pi 2+ (follow these specific instructions)](https://gist.github.com/ageitgey/1ac8dbe8572f3f533df6269dab35df65)
-* A [pre-configured VM image](https://medium.com/@ageitgey/try-deep-learning-in-python-now-with-a-fully-pre-configured-vm-1d97d4c3e9b) is also available.
+### Requirements
 
-Install this module from pypi using `pip3` (or `pip2` for Python 2):
+  * Python 3.3+ or Python 2.7
+  * macOS or Linux (Windows not officially supported, but might work)
+
+### Installation Options:
+
+#### Installing on Mac or Linux 
+
+First, make sure you have dlib already installed with Python bindings:
+
+  * [How to install dlib from source on macOS or Ubuntu](https://gist.github.com/ageitgey/629d75c1baac34dfa5ca2a1928a7aeaf)
+
+Then, install this module from pypi using `pip3` (or `pip2` for Python 2):
 
 ```bash
 pip3 install face_recognition
 ```
 
-IMPORTANT NOTE: It's very likely that you will run into problems when pip tries to compile
-the `dlib` dependency. If that happens, check out this guide to installing
-dlib from source (instead of from pip) to fix the error:
-
-[How to install dlib from source](https://gist.github.com/ageitgey/629d75c1baac34dfa5ca2a1928a7aeaf)
-
-After manually installing `dlib`, try running `pip3 install face_recognition`
-again to complete your installation.
-
-If you are still having trouble installing this, you can also try out this
+If you are having trouble with installation, you can also try out a
 [pre-configured VM](https://medium.com/@ageitgey/try-deep-learning-in-python-now-with-a-fully-pre-configured-vm-1d97d4c3e9b).
 
+#### Installing on Raspberry Pi 2+
+
+  * [Raspberry Pi 2+ installation instructions](https://gist.github.com/ageitgey/1ac8dbe8572f3f533df6269dab35df65)
+
+#### Installing on Windows
+
+While Windows isn't officially supported, helpful users have posted instuctions on how to install this library:
+
+  * [@masoudr's Windows 10 installation guide (dlib + face_recognition)](https://github.com/ageitgey/face_recognition/issues/175#issue-257710508)
+
+#### Installing a pre-configured Virtual Machine image
+
+  * [Download the pre-configured VM image](https://medium.com/@ageitgey/try-deep-learning-in-python-now-with-a-fully-pre-configured-vm-1d97d4c3e9b) (for VMware Player or VirtualBox). 
+  
 ## Usage
 
 #### Command-Line Interface
@@ -204,6 +216,27 @@ face_locations = face_recognition.face_locations(image)
 See [this example](https://github.com/ageitgey/face_recognition/blob/master/examples/find_faces_in_picture.py)
  to try it out.
 
+You can also opt-in to a somewhat more accurate deep-learning-based face detection model.
+
+Note: GPU acceleration (via nvidia's CUDA library) is required for good
+performance with this model. You'll also want to enable CUDA support
+when compliling `dlib`.
+
+```python
+import face_recognition
+
+image = face_recognition.load_image_file("my_picture.jpg")
+face_locations = face_recognition.face_locations(image, model="cnn")
+
+# face_locations is now an array listing the co-ordinates of each face!
+```
+
+See [this example](https://github.com/ageitgey/face_recognition/blob/master/examples/find_faces_in_picture_cnn.py)
+ to try it out.
+
+If you have a lot of images and a GPU, you can also
+[find faces in batches](https://github.com/ageitgey/face_recognition/blob/master/examples/find_faces_in_batches.py).
+
 ##### Automatically locate the facial features of a person in an image
 
 ```python
@@ -249,15 +282,27 @@ See [this example](https://github.com/ageitgey/face_recognition/blob/master/exam
 
 All the examples are available [here](https://github.com/ageitgey/face_recognition/tree/master/examples).
 
+
+#### Face Detection
+
 * [Find faces in a photograph](https://github.com/ageitgey/face_recognition/blob/master/examples/find_faces_in_picture.py)
+* [Find faces in a photograph (using deep learning)](https://github.com/ageitgey/face_recognition/blob/master/examples/find_faces_in_picture_cnn.py)
+* [Find faces in batches of images w/ GPU (using deep learning)](https://github.com/ageitgey/face_recognition/blob/master/examples/find_faces_in_batches.py)
+
+#### Facial Features
+
 * [Identify specific facial features in a photograph](https://github.com/ageitgey/face_recognition/blob/master/examples/find_facial_features_in_picture.py)
 * [Apply (horribly ugly) digital make-up](https://github.com/ageitgey/face_recognition/blob/master/examples/digital_makeup.py)
+
+#### Facial Recognition
+
 * [Find and recognize unknown faces in a photograph based on photographs of known people](https://github.com/ageitgey/face_recognition/blob/master/examples/recognize_faces_in_pictures.py)
+* [Compare faces by numeric face distance instead of only True/False matches](https://github.com/ageitgey/face_recognition/blob/master/examples/face_distance.py)
 * [Recognize faces in live video using your webcam - Simple / Slower Version (Requires OpenCV to be installed)](https://github.com/ageitgey/face_recognition/blob/master/examples/facerec_from_webcam.py)
 * [Recognize faces in live video using your webcam - Faster Version (Requires OpenCV to be installed)](https://github.com/ageitgey/face_recognition/blob/master/examples/facerec_from_webcam_faster.py)
+* [Recognize faces in a video file and write out new video file (Requires OpenCV to be installed)](https://github.com/ageitgey/face_recognition/blob/master/examples/facerec_from_video_file.py)
 * [Recognize faces on a Raspberry Pi w/ camera](https://github.com/ageitgey/face_recognition/blob/master/examples/facerec_on_raspberry_pi.py)
 * [Run a web service to recognize faces via HTTP (Requires Flask to be installed)](https://github.com/ageitgey/face_recognition/blob/master/examples/web_service_example.py)
-* [Compare faces by numeric face distance instead of only True/False matches](https://github.com/ageitgey/face_recognition/blob/master/examples/face_distance.py)
 
 ## How Face Recognition Works
 
@@ -296,7 +341,11 @@ try `pip2 --no-cache-dir install face_recognition` to avoid the issue.
 
 Issue: `AttributeError: 'module' object has no attribute 'face_recognition_model_v1'`
 
-Solution: The version of `dlib` you have installed is too old. You need version 19.4 or newer. Upgrade `dlib`.
+Solution: The version of `dlib` you have installed is too old. You need version 19.5 or newer. Upgrade `dlib`.
+
+Issue: `Attribute Error: 'Module' object has no attribute 'cnn_face_detection_model_v1'`
+
+Solution: The version of `dlib` you have installed is too old. You need version 19.5 or newer. Upgrade `dlib`.
 
 Issue: `TypeError: imread() got an unexpected keyword argument 'mode'`
 
