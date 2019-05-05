@@ -1,6 +1,38 @@
 History
 =======
 
+1.2.3 (2018-08-21)
+------------------
+
+* You can now pass model="small" to face_landmarks() to use the 5-point face model instead of the 68-point model.
+* Now officially supporting Python 3.7
+* New example of using this library in a Jupyter Notebook
+
+1.2.2 (2018-04-02)
+------------------
+
+* Added the face_detection CLI command
+* Removed dependencies on scipy to make installation easier
+* Cleaned up KNN example and fixed a bug with drawing fonts to label detected faces in the demo
+
+
+1.2.1 (2018-02-01)
+------------------
+
+* Fixed version numbering inside of module code.
+
+
+1.2.0 (2018-02-01)
+------------------
+
+* Fixed a bug where batch size parameter didn't work correctly when doing batch face detections on GPU.
+* Updated OpenCV examples to do proper BGR -> RGB conversion
+* Updated webcam examples to avoid common mistakes and reduce support questions
+* Added a KNN classification example
+* Added an example of automatically blurring faces in images or videos
+* Updated Dockerfile example to use dlib v19.9 which removes the boost dependency.
+
+
 1.1.0 (2017-09-23)
 ------------------
 

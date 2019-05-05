@@ -1,19 +1,15 @@
-# This is a _very simple_ example of a web service that recognizes faces in uploaded images.
-# Upload an image file and it will check if the image contains a picture of Barack Obama.
-# The result is returned as json. For example:
-#
+# 这是一个非常简单的使用Web服务上传图片运行人脸识别的案例，后端服务器会识别这张图片是不是奥巴马，并把识别结果以json键值对输出
+# 比如：运行以下代码
 # $ curl -XPOST -F "file=@obama2.jpg" http://127.0.0.1:5001
-#
-# Returns:
-#
+# 会返回：
 # {
 #  "face_found_in_image": true,
 #  "is_picture_of_obama": true
 # }
 #
-# This example is based on the Flask file upload example: http://flask.pocoo.org/docs/0.12/patterns/fileuploads/
+# 本项目基于Flask框架的案例 http://flask.pocoo.org/docs/0.12/patterns/fileuploads/
 
-# NOTE: This example requires flask to be installed! You can install it with pip:
+# 提示：运行本案例需要安装Flask，你可以用下面的代码安装Flask
 # $ pip3 install flask
 
 import face_recognition
@@ -32,7 +28,7 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_image():
-    # Check if a valid image file was uploaded
+    # 检测图片是否上传成功
     if request.method == 'POST':
         if 'file' not in request.files:
             return redirect(request.url)
@@ -43,10 +39,10 @@ def upload_image():
             return redirect(request.url)
 
         if file and allowed_file(file.filename):
-            # The image file seems valid! Detect faces and return the result.
+            # 图片上传成功，检测图片中的人脸
             return detect_faces_in_image(file)
 
-    # If no valid image file was uploaded, show the file upload form:
+    # 图片上传失败，输出以下html代码
     return '''
     <!doctype html>
     <title>Is this a picture of Obama?</title>
@@ -59,7 +55,7 @@ def upload_image():
 
 
 def detect_faces_in_image(file_stream):
-    # Pre-calculated face encoding of Obama generated with face_recognition.face_encodings(img)
+    # 用face_recognition.face_encodings(img)接口提前把奥巴马人脸的编码录入
     known_face_encoding = [-0.09634063,  0.12095481, -0.00436332, -0.07643753,  0.0080383,
                             0.01902981, -0.07184699, -0.09383309,  0.18518871, -0.09588896,
                             0.23951106,  0.0986533 , -0.22114635, -0.1363683 ,  0.04405268,
@@ -87,9 +83,9 @@ def detect_faces_in_image(file_stream):
                            -0.01194376, -0.02300822, -0.17204897, -0.0596558 ,  0.05307484,
                             0.07417042,  0.07126575,  0.00209804]
 
-    # Load the uploaded image file
+    # 载入用户上传的图片
     img = face_recognition.load_image_file(file_stream)
-    # Get face encodings for any faces in the uploaded image
+    # 为用户上传的图片中的人脸编码
     unknown_face_encodings = face_recognition.face_encodings(img)
 
     face_found = False
@@ -97,17 +93,18 @@ def detect_faces_in_image(file_stream):
 
     if len(unknown_face_encodings) > 0:
         face_found = True
-        # See if the first face in the uploaded image matches the known face of Obama
+        # 看看图片中的第一张脸是不是奥巴马
         match_results = face_recognition.compare_faces([known_face_encoding], unknown_face_encodings[0])
         if match_results[0]:
             is_obama = True
 
-    # Return the result as json
+    # 讲识别结果以json键值对的数据结构输出
     result = {
         "face_found_in_image": face_found,
         "is_picture_of_obama": is_obama
     }
     return jsonify(result)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, debug=True)
